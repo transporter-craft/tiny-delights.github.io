@@ -1,10 +1,901 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>测试</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>欧盟网络弹性法案（CRA）核心要点图解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --blue-dark: #0a2463;
+    --blue-mid: #1e4db7;
+    --blue-light: #3a7bd5;
+    --gold: #f0a500;
+    --gold-light: #ffc840;
+    --teal: #00b4d8;
+    --green: #06d6a0;
+    --red: #ef233c;
+    --gray-bg: #f0f4f8;
+    --white: #ffffff;
+    --text-dark: #1a202c;
+    --text-mid: #4a5568;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #e8eef7;
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(135deg, #0a1628 0%, #0d2b6b 40%, #1a4fa8 100%);
+    padding: 60px 40px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .eu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 30px;
+    padding: 6px 18px;
+    font-size: 13px;
+    color: #a8c4e8;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  .eu-stars {
+    color: var(--gold);
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--gold-light); }
+  .hero-sub {
+    font-size: 16px;
+    color: #90b4d8;
+    margin-bottom: 32px;
+  }
+  .reg-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: #0a1628;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 6px 20px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== TIMELINE ===== */
+  .section { padding: 50px 24px; max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .section-title h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--blue-dark);
+  }
+  .section-title p { font-size: 14px; color: var(--text-mid); margin-top: 2px; }
+
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 18px; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--blue-mid), var(--teal), var(--green));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 12px rgba(10,36,99,0.08);
+    border-left: 4px solid transparent;
+  }
+  .tl-item.active { border-left-color: var(--green); }
+  .tl-item.warn { border-left-color: var(--gold); }
+  .tl-item.critical { border-left-color: var(--red); }
+  .tl-dot {
+    position: absolute;
+    left: -32px;
+    top: 22px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px var(--blue-mid);
+  }
+  .tl-item.active .tl-dot { background: var(--green); box-shadow: 0 0 0 3px var(--green); }
+  .tl-item.warn .tl-dot { background: var(--gold); box-shadow: 0 0 0 3px var(--gold); }
+  .tl-item.critical .tl-dot { background: var(--red); box-shadow: 0 0 0 3px var(--red); }
+  .tl-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .tl-title { font-size: 17px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+  .tl-desc { font-size: 14px; color: var(--text-mid); }
+
+  /* ===== PRODUCT CLASSES ===== */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .product-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(10,36,99,0.1);
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-4px); }
+  .product-card-header {
+    padding: 24px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card-header::after {
+    content: '';
+    position: absolute;
+    right: -20px; bottom: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+  .card-standard { background: linear-gradient(135deg, #3a7bd5, #00d2ff); }
+  .card-important { background: linear-gradient(135deg, #f0a500, #ff6b35); }
+  .card-critical { background: linear-gradient(135deg, #ef233c, #8b0032); }
+  .card-class-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .product-card-header h3 { font-size: 22px; font-weight: 800; }
+  .product-card-header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .assessment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .product-card-body { padding: 20px 24px; }
+  .product-list { list-style: none; }
+  .product-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13.5px;
+    color: var(--text-dark);
+    border-bottom: 1px solid #f0f4f8;
+  }
+  .product-list li:last-child { border-bottom: none; }
+  .product-list li::before {
+    content: '▸';
+    color: var(--blue-light);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .card-important .product-list li::before { color: var(--gold); }
+  .card-critical .product-list li::before { color: var(--red); }
+
+  /* ===== REQUIREMENTS ===== */
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .req-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(10,36,99,0.07);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+  }
+  .req-card:hover { box-shadow: 0 6px 20px rgba(10,36,99,0.14); }
+  .req-num {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .req-num.blue { background: linear-gradient(135deg, var(--blue-mid), var(--teal)); }
+  .req-num.teal { background: linear-gradient(135deg, var(--teal), var(--green)); }
+  .req-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+  .req-desc { font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+
+  .req-part-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 4px solid var(--blue-light);
+  }
+
+  /* ===== REPORT TIMELINE ===== */
+  .report-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(10,36,99,0.1);
+  }
+  .report-step {
+    flex: 1;
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .report-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    z-index: 1;
+  }
+  .rs-1 { background: linear-gradient(135deg, #1e4db7, #3a7bd5); color: #fff; }
+  .rs-2 { background: linear-gradient(135deg, #f0a500, #ff8c00); color: #fff; }
+  .rs-3 { background: linear-gradient(135deg, #ef233c, #c0001a); color: #fff; }
+  .report-time {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .report-unit { font-size: 16px; font-weight: 600; opacity: 0.85; }
+  .report-name { font-size: 15px; font-weight: 700; margin: 12px 0 6px; }
+  .report-detail { font-size: 12px; opacity: 0.85; line-height: 1.5; }
+
+  @media (max-width: 640px) {
+    .report-flow { flex-direction: column; }
+    .report-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -12px; transform: translateX(-50%); }
+  }
+
+  /* ===== PENALTY ===== */
+  .penalty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .penalty-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: 0 4px 16px rgba(10,36,99,0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .penalty-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .penalty-card.p1::before { background: var(--red); }
+  .penalty-card.p2::before { background: var(--gold); }
+  .penalty-card.p3::before { background: var(--teal); }
+  .penalty-amount {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--blue-dark);
+    line-height: 1.1;
+    margin: 12px 0 4px;
+  }
+  .penalty-amount.big { font-size: 42px; color: var(--red); }
+  .penalty-or { font-size: 13px; color: var(--text-mid); margin: 4px 0; }
+  .penalty-percent { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+  .penalty-type {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .penalty-card.p1 .penalty-type { background: #fff0f0; color: var(--red); }
+  .penalty-card.p2 .penalty-type { background: #fff8e1; color: #c87a00; }
+  .penalty-card.p3 .penalty-type { background: #e0f7fa; color: #00838f; }
+  .penalty-desc { font-size: 13px; color: var(--text-mid); margin-top: 12px; line-height: 1.5; }
+
+  /* ===== ROADMAP ===== */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .roadmap-phase {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(10,36,99,0.1);
+  }
+  .roadmap-header {
+    padding: 20px 24px;
+    color: #fff;
+  }
+  .phase-1 .roadmap-header { background: linear-gradient(135deg, #0a2463, #1e4db7); }
+  .phase-2 .roadmap-header { background: linear-gradient(135deg, #1e4db7, #00b4d8); }
+  .phase-3 .roadmap-header { background: linear-gradient(135deg, #00b4d8, #06d6a0); }
+  .roadmap-header .phase-label {
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.75;
+    margin-bottom: 4px;
+  }
+  .roadmap-header h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .roadmap-header p { font-size: 13px; opacity: 0.85; }
+  .roadmap-body { padding: 20px 24px; }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f4f8;
+    font-size: 13.5px;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 2px solid #d0dbe8;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .task-text { color: var(--text-dark); line-height: 1.4; }
+  .task-text strong { color: var(--blue-dark); font-weight: 700; }
+
+  /* ===== RELATIONS ===== */
+  .rel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .rel-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(10,36,99,0.07);
+    border-top: 4px solid var(--blue-light);
+  }
+  .rel-card h4 { font-size: 15px; font-weight: 700; color: var(--blue-dark); margin-bottom: 8px; }
+  .rel-card p { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: var(--blue-dark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 32px;
+    font-size: 13px;
+  }
+  .footer strong { color: rgba(255,255,255,0.9); }
+
+  /* ===== BG SECTIONS ===== */
+  .bg-gray { background: var(--gray-bg); }
+  .bg-white { background: #fff; }
+  .bg-dark { background: linear-gradient(135deg, #0a1628, #0d2b6b); }
+
+  .section-wrap { padding: 50px 24px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .info-banner {
+    background: linear-gradient(135deg, #e8f0fe, #d0e4ff);
+    border: 1px solid #93bfff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .info-banner-icon { font-size: 24px; flex-shrink: 0; }
+  .info-banner-text { font-size: 14px; color: #1a3a6e; line-height: 1.7; }
+  .info-banner-text strong { font-weight: 700; }
+</style>
 </head>
 <body>
-<h1>Hello GitHub Pages</h1>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eu-badge">
+    <span class="eu-stars">★★★★★★★★★★★★</span>
+    欧洲联盟官方法规
+  </div>
+  <h1>欧盟<span>网络弹性法案</span><br>核心要点图解</h1>
+  <p class="hero-sub">Cyber Resilience Act · 数字元素产品横向网络安全要求</p>
+  <span class="reg-tag">Regulation (EU) 2024/2847 · 2024年10月23日通过</span>
+</div>
+
+<!-- TIMELINE -->
+<div class="section-wrap bg-gray">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#1e4db7,#00b4d8);">📅</div>
+      <div>
+        <h2>关键时间节点</h2>
+        <p>企业必须掌握的合规日历</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item active">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2024年12月10日</div>
+        <div class="tl-title">✅ 法案正式生效</div>
+        <div class="tl-desc">Regulation (EU) 2024/2847 发布于欧盟官方期刊，正式进入法律效力阶段</div>
+      </div>
+      <div class="tl-item warn">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026年6月11日</div>
+        <div class="tl-title">⚙️ 第三方公告机构制度启用</div>
+        <div class="tl-desc">成员国完成符合性评估机构（公告机构）指定，重要/关键产品可启动第三方评估</div>
+      </div>
+      <div class="tl-item critical">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2026年9月11日 ⚠️</div>
+        <div class="tl-title">🚨 漏洞报告义务强制生效</div>
+        <div class="tl-desc">所有制造商须通过ENISA统一平台履行漏洞与严重事件报告义务（24/72小时/14天三阶段）</div>
+      </div>
+      <div class="tl-item critical">
+        <div class="tl-dot"></div>
+        <div class="tl-date">2027年12月11日 🔴</div>
+        <div class="tl-title">🎯 法案全面适用（最终截止日）</div>
+        <div class="tl-desc">所有合规义务生效——产品须满足附件I全部21项要求，张贴CE标志，具备完整技术文档</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT CLASSES -->
+<div class="section-wrap bg-white">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#f0a500,#ff6b35);">🏷️</div>
+      <div>
+        <h2>产品分类与合规路径</h2>
+        <p>三类产品，合规要求逐级递增</p>
+      </div>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-icon">🧭</div>
+      <div class="info-banner-text">
+        这一页按产品类别直接列出前文提到的产品，并仅保留一句话路径说明：普通产品走 <strong>Module A</strong>；Class I 视标准采用情况走 <strong>Module A</strong> 或 <strong>Module B+C / Module H</strong>；Class II 和关键产品走 <strong>Module B+C / Module H</strong>。
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <!-- Standard -->
+      <div class="product-card">
+        <div class="product-card-header card-standard">
+          <div class="card-class-badge">普通类产品</div>
+          <h3>Default</h3>
+          <p>附件III/IV以外的所有产品</p>
+          <div class="assessment-badge">✔ Module A</div>
+        </div>
+        <div class="product-card-body">
+          <ul class="product-list">
+            <li>一般消费电子</li>
+            <li>通用软件应用</li>
+            <li><strong>路径：</strong>制造商自评，无需公告机构</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Important Class I -->
+      <div class="product-card">
+        <div class="product-card-header card-important">
+          <div class="card-class-badge">重要产品 · 附件III Class I</div>
+          <h3>Important · Class I</h3>
+          <p>前文列举产品如下</p>
+          <div class="assessment-badge">⚠️ Module A / B+C / H</div>
+        </div>
+        <div class="product-card-body">
+          <ul class="product-list">
+            <li>身份管理与特权访问管理、浏览器、密码管理器</li>
+            <li>杀毒/反恶意软件、VPN、网络管理系统、SIEM</li>
+            <li>启动管理器、PKI与数字证书软件、网络接口、操作系统</li>
+            <li>路由器/调制解调器/交换机、含安全功能的芯片</li>
+            <li>智能家居虚拟助手、智能家居安全设备、联网玩具、健康监测可穿戴设备</li>
+            <li><strong>路径：</strong>完整采用协调标准/共同规范/适用认证方案时可走 Module A；否则走 Module B+C 或 Module H，需要公告机构</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Important Class II -->
+      <div class="product-card">
+        <div class="product-card-header card-important">
+          <div class="card-class-badge">重要产品 · 附件III Class II</div>
+          <h3>Important · Class II</h3>
+          <p>前文列举产品如下</p>
+          <div class="assessment-badge">🧪 Module B+C 或 H</div>
+        </div>
+        <div class="product-card-body">
+          <ul class="product-list">
+            <li>虚拟化管理程序与容器运行时</li>
+            <li>防火墙、IDS/IPS系统</li>
+            <li>防篡改微处理器</li>
+            <li>防篡改微控制器</li>
+            <li><strong>路径：</strong>走 Module B+C 或 Module H，需要公告机构</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Critical -->
+      <div class="product-card">
+        <div class="product-card-header card-critical">
+          <div class="card-class-badge">关键产品 · 附件IV</div>
+          <h3>Critical</h3>
+          <p>前文列举产品如下</p>
+          <div class="assessment-badge">🔴 Module B+C 或 H</div>
+        </div>
+        <div class="product-card-body">
+          <ul class="product-list">
+            <li>带安全盒的硬件设备</li>
+            <li>智能电表网关及其他高级安全用途设备</li>
+            <li>智能卡或类似设备</li>
+            <li><strong>路径：</strong>走 Module B+C 或 Module H，需要公告机构</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REQUIREMENTS -->
+<div class="section-wrap bg-gray">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#06d6a0,#00b4d8);">📋</div>
+      <div>
+        <h2>附件I：21项基本网络安全要求</h2>
+        <p>所有含数字元素产品必须满足的核心标准</p>
+      </div>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-icon">ℹ️</div>
+      <div class="info-banner-text">
+        附件I分为两部分：<strong>第一部分（13项）</strong> 针对产品本身的安全属性；<strong>第二部分（8项）</strong> 针对制造商的漏洞处理义务。两部分均须全面满足。
+      </div>
+    </div>
+
+    <p class="req-part-title">第一部分：产品属性要求（13项）</p>
+    <div class="req-grid" style="margin-bottom: 36px;">
+      <div class="req-card">
+        <div class="req-num blue">01</div>
+        <div><div class="req-title">🛡️ 无已知漏洞</div><div class="req-desc">上市时不得存在已知可被利用的漏洞</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">02</div>
+        <div><div class="req-title">⚙️ 默认安全配置</div><div class="req-desc">以安全默认状态上市，提供出厂重置功能</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">03</div>
+        <div><div class="req-title">🔄 安全更新机制</div><div class="req-desc">支持自动安全更新（可退出），及时推送补丁</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">04</div>
+        <div><div class="req-title">🔐 防未授权访问</div><div class="req-desc">通过认证/IAM机制防止未授权访问，记录访问尝试</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">05</div>
+        <div><div class="req-title">🔒 数据保密性</div><div class="req-desc">使用加密等先进技术保护存储/传输/处理中的数据</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">06</div>
+        <div><div class="req-title">✅ 数据完整性</div><div class="req-desc">防止数据/命令/程序被篡改，报告损坏情况</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">07</div>
+        <div><div class="req-title">📉 数据最小化</div><div class="req-desc">仅处理产品目的所必要的最少数据</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">08</div>
+        <div><div class="req-title">⚡ 功能可用性</div><div class="req-desc">核心功能在故障后仍可用，具备抗DDoS攻击能力</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">09</div>
+        <div><div class="req-title">🌐 最小化负面影响</div><div class="req-desc">减少对其他设备/网络/服务的负面影响</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">10</div>
+        <div><div class="req-title">🎯 限制攻击面</div><div class="req-desc">设计上限制外部接口等攻击向量，遵循最小权限原则</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">11</div>
+        <div><div class="req-title">🛠️ 减轻事件影响</div><div class="req-desc">采用漏洞利用缓解技术（ASLR等）降低攻击影响</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">12</div>
+        <div><div class="req-title">📝 安全日志记录</div><div class="req-desc">记录安全相关活动，为用户提供关闭日志的机制</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num blue">13</div>
+        <div><div class="req-title">🗑️ 安全数据清除</div><div class="req-desc">提供安全、永久清除所有数据和设置的功能</div></div>
+      </div>
+    </div>
+
+    <p class="req-part-title">第二部分：漏洞处理要求（8项）</p>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-num teal">01</div>
+        <div><div class="req-title">📦 SBOM 软件物料清单</div><div class="req-desc">识别并记录产品及组件漏洞，制作顶层依赖项SBOM</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">02</div>
+        <div><div class="req-title">⚡ 及时修复漏洞</div><div class="req-desc">按风险优先级处理，安全更新应与功能更新分离提供</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">03</div>
+        <div><div class="req-title">🔬 定期安全测试</div><div class="req-desc">对产品进行定期有效的安全测试与安全审查</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">04</div>
+        <div><div class="req-title">📢 披露漏洞信息</div><div class="req-desc">修复后公开发布漏洞信息（描述/影响/严重性/修复指南）</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">05</div>
+        <div><div class="req-title">📜 CVD 政策</div><div class="req-desc">建立并执行协调漏洞披露（CVD）政策</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">06</div>
+        <div><div class="req-title">📬 漏洞报告渠道</div><div class="req-desc">提供明确的安全漏洞报告联系方式和渠道</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">07</div>
+        <div><div class="req-title">🔁 安全分发更新</div><div class="req-desc">建立安全机制分发补丁，安全更新支持自动推送</div></div>
+      </div>
+      <div class="req-card">
+        <div class="req-num teal">08</div>
+        <div><div class="req-title">💰 免费安全更新</div><div class="req-desc">安全更新须免费提供（与商业用户另有约定除外）</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT FLOW -->
+<div class="section-wrap bg-white">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#ef233c,#ff6b35);">🚨</div>
+      <div>
+        <h2>漏洞报告三阶段时限</h2>
+        <p>发现漏洞被主动利用或严重安全事件后，须按以下时限报告</p>
+      </div>
+    </div>
+
+    <div class="report-flow">
+      <div class="report-step rs-1">
+        <div class="report-time">24</div>
+        <div class="report-unit">小时内</div>
+        <div class="report-name">📡 早期预警</div>
+        <div class="report-detail">通知ENISA统一报告平台<br>注明是否怀疑存在恶意行为</div>
+      </div>
+      <div class="report-step rs-2">
+        <div class="report-time">72</div>
+        <div class="report-unit">小时内</div>
+        <div class="report-name">📋 通知报告</div>
+        <div class="report-detail">初步影响及严重性评估<br>提供漏洞利用指标（IoC）</div>
+      </div>
+      <div class="report-step rs-3">
+        <div class="report-time">14</div>
+        <div class="report-unit">天内</div>
+        <div class="report-name">📄 最终报告</div>
+        <div class="report-detail">漏洞详情 + 修复方案<br>全面影响评估（复杂情况可延至1个月）</div>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:14px; font-size:13px; color:#7a90a8;">📍 统一通过 ENISA（欧盟网络安全局）集中报告平台提交，由ENISA转发至相关成员国CSIRT</p>
+  </div>
+</div>
+
+<!-- PENALTIES -->
+<div class="section-wrap bg-gray">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#ef233c,#8b0032);">💰</div>
+      <div>
+        <h2>违规处罚机制</h2>
+        <p>取全球年营业额比例与固定金额中的较高者</p>
+      </div>
+    </div>
+
+    <div class="penalty-grid">
+      <div class="penalty-card p1">
+        <div class="penalty-type">违反附件I基本安全要求</div>
+        <div class="penalty-amount big">€1,500万</div>
+        <div class="penalty-or">或</div>
+        <div class="penalty-percent">全球年营收 2.5%</div>
+        <div class="penalty-desc">最严重违规类型，适用于产品本身不满足21项基本网络安全要求的情形</div>
+      </div>
+      <div class="penalty-card p2">
+        <div class="penalty-type">违反其他义务</div>
+        <div class="penalty-amount">€1,000万</div>
+        <div class="penalty-or">或</div>
+        <div class="penalty-percent">全球年营收 2%</div>
+        <div class="penalty-desc">适用于漏洞报告、技术文档、CE标志、支持期标注等义务违反情形</div>
+      </div>
+      <div class="penalty-card p3">
+        <div class="penalty-type">提供虚假信息</div>
+        <div class="penalty-amount">€500万</div>
+        <div class="penalty-or">或</div>
+        <div class="penalty-percent">全球年营收 1%</div>
+        <div class="penalty-desc">向市场监管机构或公告机构提供不实或误导性信息</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="section-wrap bg-white">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#06d6a0,#1e4db7);">🗺️</div>
+      <div>
+        <h2>企业合规三阶段行动路线图</h2>
+        <p>从现在到2027年12月的合规行动计划</p>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <div class="roadmap-phase phase-1">
+        <div class="roadmap-header">
+          <div class="phase-label">阶段一</div>
+          <h3>立即行动</h3>
+          <p>2024年12月 — 2025年底</p>
+        </div>
+        <div class="roadmap-body">
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>产品摸底</strong>：盘点所有在欧盟销售或计划销售的含数字元素产品</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>分类判定</strong>：对照附件III、附件IV判断产品类别（普通 / 重要〔Class I、Class II〕/ 关键）</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>GAP分析</strong>：对照附件I全部21项要求进行差距分析</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>成立合规小组</strong>：指定产品安全负责人，建立跨部门合规机制</div></div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase phase-2">
+        <div class="roadmap-header">
+          <div class="phase-label">阶段二</div>
+          <h3>关键准备</h3>
+          <p>2026年全年</p>
+        </div>
+        <div class="roadmap-body">
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>建立SBOM能力</strong>：为所有产品建立软件物料清单（至少顶层依赖项）</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>建立漏洞管理流程</strong>：制定CVD政策，建立漏洞报告渠道</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>对接ENISA报告平台</strong>：9月11日前完成对接测试（报告义务生效）</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>准备技术文档</strong>：按附件VII要求准备完整文档体系</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>重要/关键产品</strong>：Class I先判断能否以协调标准/共同规范覆盖后走自评；Class II与关键产品必须尽早启动公告机构评估（Module B+C或Module H）</div></div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase phase-3">
+        <div class="roadmap-header">
+          <div class="phase-label">阶段三</div>
+          <h3>全面达标</h3>
+          <p>2027年12月11日前</p>
+        </div>
+        <div class="roadmap-body">
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>完成所有合规评估</strong>：通过制造商自评或第三方机构评估</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>CE标志与DoC</strong>：在产品上贴附CE标志，签署EU符合性声明</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>标注支持期日期</strong>：在产品上明确标注支持期结束日期</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>持续漏洞监测</strong>：建立常态化漏洞监测与响应机制</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text"><strong>供应链尽职调查</strong>：对第三方组件和开源依赖完成尽职调查</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELATIONS -->
+<div class="section-wrap bg-gray">
+  <div class="section-inner">
+    <div class="section-title">
+      <div class="section-icon" style="background:linear-gradient(135deg,#8b00ff,#1e4db7);">🔗</div>
+      <div>
+        <h2>与其他欧盟法规的衔接</h2>
+        <p>CRA不孤立存在，须与多项法规协同适用</p>
+      </div>
+    </div>
+
+    <div class="rel-grid">
+      <div class="rel-card">
+        <h4>📡 NIS2 指令</h4>
+        <p>CRA关注<strong>产品安全</strong>，NIS2关注<strong>组织运营安全</strong>，两者互补不重叠，关键基础设施运营商须同时满足</p>
+      </div>
+      <div class="rel-card">
+        <h4>🤖 AI 法案</h4>
+        <p>高风险AI系统若属于CRA重要/关键产品，须<strong>同时满足</strong>AI法案和CRA两套要求</p>
+      </div>
+      <div class="rel-card">
+        <h4>🏥 医疗器械（MDR/IVDR）</h4>
+        <p>已被MDR/IVDR覆盖的医疗设备<strong>豁免CRA</strong>，由医疗器械法规管理安全要求</p>
+      </div>
+      <div class="rel-card">
+        <h4>🚗 汽车型式认证</h4>
+        <p>汽车专用组件<strong>豁免CRA</strong>；但通过通用渠道销售的汽车产品须适用CRA</p>
+      </div>
+      <div class="rel-card">
+        <h4>📡 无线电设备指令（RED）</h4>
+        <p>部分产品重叠，<strong>CRA优先适用</strong>于RED中涉及网络安全的条款部分</p>
+      </div>
+      <div class="rel-card">
+        <h4>🔏 GDPR</h4>
+        <p>数据最小化等要求与GDPR协同，遵循"一次处理，双重合规"原则，<strong>不重复处罚</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>📋 本图文整理自 <strong>Regulation (EU) 2024/2847</strong> 官方文本及欧盟委员会官方摘要</p>
+  <p style="margin-top:6px;">官方来源：<strong>eur-lex.europa.eu</strong> · <strong>digital-strategy.ec.europa.eu</strong></p>
+  <p style="margin-top:6px; opacity:0.5;">整理日期：2026年4月1日 · 仅供参考，法律适用以官方文本为准</p>
+</div>
+
 </body>
 </html>
