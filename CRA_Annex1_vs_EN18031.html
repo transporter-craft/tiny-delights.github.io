@@ -1,1 +1,419 @@
 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRA 附件一 Part I vs EN 18031 对比分析</title>
+  <style>
+    :root {
+      --primary: #1a2e5a;
+      --accent: #2563eb;
+      --green: #15803d;
+      --yellow: #b45309;
+      --red: #b91c1c;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+      padding: 0 0 60px;
+    }
+    header {
+      background: linear-gradient(135deg, #1a2e5a 0%, #1e4080 60%, #2563eb 100%);
+      color: white; padding: 48px 40px 40px;
+    }
+    header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+    header .subtitle { opacity: 0.85; font-size: 0.95rem; }
+    header .meta { margin-top: 16px; display: flex; gap: 24px; flex-wrap: wrap; }
+    header .meta span {
+      background: rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 4px 14px; font-size: 0.82rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* Section title */
+    .section-title {
+      font-size: 1.2rem; font-weight: 700; color: var(--primary);
+      margin: 36px 0 16px; padding-left: 12px;
+      border-left: 4px solid var(--accent);
+    }
+
+    /* Background cards */
+    .bg-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px; }
+    .bg-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px 22px;
+    }
+    .bg-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .bg-card p { font-size: 0.87rem; color: var(--muted); }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; margin-bottom: 8px; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    thead th {
+      background: var(--primary); color: white;
+      padding: 12px 14px; text-align: left; font-weight: 600;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: #f1f5f9; }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    .num { text-align: center; font-weight: 700; color: var(--primary); }
+
+    /* Badge */
+    .badge {
+      display: inline-block; border-radius: 4px; padding: 2px 8px;
+      font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+    }
+    .badge-full { background: #dcfce7; color: var(--green); }
+    .badge-partial { background: #fef3c7; color: var(--yellow); }
+    .badge-none { background: #fee2e2; color: var(--red); }
+
+    /* Mechanisms table */
+    .mech-table thead th { background: #334155; }
+
+    /* Gap cards */
+    .gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .gap-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 20px;
+      border-left: 4px solid var(--red);
+    }
+    .gap-card .gap-num {
+      font-size: 0.75rem; font-weight: 700; color: var(--red);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+    }
+    .gap-card h4 { font-size: 0.92rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .gap-card p { font-size: 0.84rem; color: var(--muted); }
+
+    /* Summary box */
+    .summary-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1px solid #93c5fd; border-radius: 12px;
+      padding: 24px 28px; margin-top: 32px;
+    }
+    .summary-box h3 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .summary-box p { font-size: 0.9rem; color: var(--text); line-height: 1.8; }
+    .summary-box strong { color: var(--accent); }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 8px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 20px; text-align: center;
+    }
+    .stat-num { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+    .stat-full .stat-num { color: var(--green); }
+    .stat-partial .stat-num { color: var(--yellow); }
+    .stat-none .stat-num { color: var(--red); }
+
+    /* CRA vs EN mapping main table */
+    .cra-col { min-width: 220px; }
+    .mech-col { min-width: 150px; }
+    .gap-col { min-width: 200px; }
+    .cov-col { min-width: 90px; text-align: center; }
+
+    .note { font-size: 0.78rem; color: var(--muted); margin-top: 8px; padding-left: 4px; }
+    .ref { font-size: 0.78rem; color: var(--muted); margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+    @media(max-width: 700px) {
+      .bg-cards, .gap-grid, .stats-row { grid-template-columns: 1fr; }
+      header { padding: 32px 20px 28px; }
+      .container { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CRA 附件一 Part I（13+项基本要求）<br>vs EN 18031 覆盖对比</h1>
+  <div class="subtitle">欧盟网络弹性法案 · 基本网络安全要求与无线电设备协调标准对比分析</div>
+  <div class="meta">
+    <span>CRA: EU 2024/2847, Annex I Part I</span>
+    <span>EN 18031-1/2/3:2024（协调标准，OJ 2025年1月）</span>
+    <span>整理日期：2026-04-10</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 背景说明 -->
+  <div class="section-title">背景说明</div>
+  <div class="bg-cards">
+    <div class="bg-card">
+      <h3>CRA（网络弹性法案）</h3>
+      <p>Regulation (EU) 2024/2847，2024年12月10日生效，2027年12月11日全面适用。针对<strong>所有含数字元素产品</strong>的横向安全法规，要求产品上市前完成安全设计，并在支持期内持续维护。附件一 Part I 规定产品属性相关的基本网络安全要求。</p>
+    </div>
+    <div class="bg-card">
+      <h3>EN 18031 系列标准</h3>
+      <p>专为<strong>无线电设备</strong>（Radio Equipment Directive, RED）制定的协调标准，共三册，2025年8月1日起强制实施。通过14个安全机制（8个通用 + 6个差异化）为 RED Art. 3.3(d)(e)(f) 提供符合性推定路径，适用范围窄于 CRA。</p>
+    </div>
+  </div>
+
+  <!-- EN 18031 三个分册 -->
+  <div class="section-title">EN 18031 三个分册与 14 大安全机制</div>
+  <div class="table-wrap">
+    <table class="mech-table">
+      <thead>
+        <tr>
+          <th>分册</th>
+          <th>对应 RED 条款</th>
+          <th>核心主题</th>
+          <th>专属机制</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>EN 18031-1</strong></td>
+          <td>Art. 3.3(d)</td>
+          <td>网络保护（防止损害网络/滥用资源）</td>
+          <td>RLM 恢复、NMM 网络监控、TCM 流量控制</td>
+        </tr>
+        <tr>
+          <td><strong>EN 18031-2</strong></td>
+          <td>Art. 3.3(e)</td>
+          <td>隐私与个人数据保护</td>
+          <td>LGM 日志（审计）、DLM 删除、UNM 用户通知</td>
+        </tr>
+        <tr>
+          <td><strong>EN 18031-3</strong></td>
+          <td>Art. 3.3(f)</td>
+          <td>货币/虚拟货币欺诈防护</td>
+          <td>LGM 日志（金融交易）、GEC-8 设备完整性</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-wrap" style="margin-top:14px;">
+    <table class="mech-table">
+      <thead>
+        <tr>
+          <th>机制缩写</th>
+          <th>名称</th>
+          <th>适用分册</th>
+          <th>核心技术要求</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>ACM</strong></td><td>访问控制机制</td><td>-1/-2/-3 通用</td><td>角色权限管理、强制访问控制、最小权限原则</td></tr>
+        <tr><td><strong>AUM</strong></td><td>身份认证机制</td><td>-1/-2/-3 通用</td><td>单/双因素认证；敏感数据场景强制双因素</td></tr>
+        <tr><td><strong>SUM</strong></td><td>安全更新机制</td><td>-1/-2/-3 通用</td><td>数字签名验证更新包；自动更新需人工确认；防服务中断</td></tr>
+        <tr><td><strong>SSM</strong></td><td>安全存储机制</td><td>-1/-2/-3 通用</td><td>加密存储密钥/用户数据；抵御物理及逻辑层攻击</td></tr>
+        <tr><td><strong>SCM</strong></td><td>安全通信机制</td><td>-1/-2/-3 通用</td><td>TLS/IPsec 加密；防中间人/重放攻击；通信双方可认证</td></tr>
+        <tr><td><strong>CCK</strong></td><td>可信加密密钥</td><td>-1/-2/-3 通用</td><td>密钥生成、存储、更新全生命周期安全</td></tr>
+        <tr><td><strong>GEC</strong></td><td>通用设备能力</td><td>-1/-2/-3 通用</td><td>漏洞管理、接口控制、输入验证、禁默认不必要服务</td></tr>
+        <tr><td><strong>CRY</strong></td><td>密码学</td><td>-1/-2/-3 通用</td><td>符合最佳实践的加密算法</td></tr>
+        <tr><td><strong>RLM</strong></td><td>恢复机制</td><td>-1 专属</td><td>攻击后快速恢复服务，减少业务中断</td></tr>
+        <tr><td><strong>NMM</strong></td><td>网络监控机制</td><td>-1 专属</td><td>实时监控网络流量；识别 DDoS 等攻击行为</td></tr>
+        <tr><td><strong>TCM</strong></td><td>流量控制机制</td><td>-1 专属</td><td>限制设备资源占用；防止服务降级</td></tr>
+        <tr><td><strong>LGM</strong></td><td>日志机制</td><td>-2（审计），-3（金融）专属</td><td>记录用户操作/数据访问（-2）；记录每笔金融交易（-3）</td></tr>
+        <tr><td><strong>DLM</strong></td><td>删除机制</td><td>-2 专属</td><td>彻底删除用户隐私数据</td></tr>
+        <tr><td><strong>UNM</strong></td><td>用户通知机制</td><td>-2 专属</td><td>影响个人信息保护或隐私的变化须及时通知用户</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 覆盖统计 -->
+  <div class="section-title">覆盖程度总览</div>
+  <div class="stats-row">
+    <div class="stat-card stat-full">
+      <div class="stat-num">7</div>
+      <div class="stat-label">✅ 较好/完全覆盖</div>
+    </div>
+    <div class="stat-card stat-partial">
+      <div class="stat-num">7</div>
+      <div class="stat-label">⚠️ 部分覆盖（有差距）</div>
+    </div>
+    <div class="stat-card stat-none">
+      <div class="stat-num">0</div>
+      <div class="stat-label">❌ 完全未覆盖</div>
+    </div>
+  </div>
+
+  <!-- 主对比表 -->
+  <div class="section-title">CRA 附件一 Part I 各条款与 EN 18031 逐项对比</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:44px">#</th>
+          <th class="cra-col">CRA 条款要求</th>
+          <th class="cov-col">覆盖</th>
+          <th class="mech-col">EN 18031 对应机制</th>
+          <th class="gap-col">差距 / 说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td><strong>基于风险的适当网络安全水平</strong><br><small>按风险设计、开发和生产产品</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>GEC（接口控制、输入验证）</td>
+          <td>EN 18031 有机制要求，但<strong>无正式网络安全风险评估框架</strong>；CRA 强制以风险评估为合规基础（Art. 13(2)）</td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td><strong>无已知可利用漏洞</strong><br><small>上市时无已知漏洞，持续维护</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>GEC（漏洞管理）</td>
+          <td>EN 18031 仅隐含漏洞管理；CRA 明确要求<strong>上市时无已知可利用漏洞</strong>，支持期内持续修补，无专用漏洞跟踪数据库要求</td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td><strong>默认安全配置</strong><br><small>安全出厂设置，支持恢复出厂</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>GEC（禁默认开启不必要服务）+ AUM（密码要求）</td>
+          <td>EN 18031 GEC/AUM 覆盖；<strong>密码跳过触发限制条款</strong>（需公告机构介入）——合规推定有条件</td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td><strong>安全更新机制</strong><br><small>支持安全更新，可自动更新，通知用户，提供退出机制</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>SUM（数字签名验证、自动更新确认）</td>
+          <td>EN 18031 SUM 覆盖；CRA 额外要求：<strong>支持期≥5年、自动更新默认开启</strong>——比 EN 18031 更严格</td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td><strong>防止未授权访问</strong><br><small>身份验证、访问管理，上报可能的未授权访问</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>ACM（访问控制）+ AUM（身份认证）</td>
+          <td>EN 18031 完整覆盖访问控制/认证；CRA 额外要求<strong>上报可能的未授权访问</strong>，EN 18031 无此报告义务</td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td><strong>数据保密性保护</strong><br><small>静态加密/传输加密，防止未授权访问数据</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>SCM（传输加密）+ SSM（静态加密）+ CCK（密钥管理）+ CRY（加密算法）</td>
+          <td>EN 18031 四个机制综合覆盖；CRY 要求符合最佳实践算法——覆盖较全</td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td><strong>数据完整性保护</strong><br><small>防止篡改数据/命令/程序/配置，报告损坏</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>SCM（防篡改/防重放）+ SSM（完整性保护）</td>
+          <td>EN 18031 覆盖传输和存储完整性；CRA 额外要求<strong>报告完整性损坏</strong>，EN 18031 无专属报告义务</td>
+        </tr>
+        <tr>
+          <td class="num">8</td>
+          <td><strong>数据最小化</strong><br><small>仅处理预期目的所必需的数据</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>EN 18031-2 隐含隐私保护原则</td>
+          <td>EN 18031-2 侧重隐私数据处理安全，<strong>未明确数据最小化为强制原则</strong>；该条款更属 GDPR 范畴，CRA 首次将其纳入产品设计要求</td>
+        </tr>
+        <tr>
+          <td class="num">9</td>
+          <td><strong>基本功能可用性保护</strong><br><small>抵御 DoS 攻击弹性，事件后恢复</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>RLM（恢复）+ NMM（监控/识别DDoS）+ TCM（流量控制/防资源滥用）</td>
+          <td>EN 18031-1 三个差异化机制完整支撑；但 <strong>RLM/NMM/TCM 仅在 -1 中</strong>，非联网设备不适用</td>
+        </tr>
+        <tr>
+          <td class="num">10</td>
+          <td><strong>限制对其他设备/服务的影响</strong><br><small>最小化对连接设备或网络的负面影响</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>TCM（流量控制/限制资源占用）+ NMM（异常流量监控）</td>
+          <td>EN 18031-1 直接对应；这也是 RED Art. 3.3(d) 的核心要求——与 CRA 意图高度一致</td>
+        </tr>
+        <tr>
+          <td class="num">11</td>
+          <td><strong>限制攻击面</strong><br><small>设计减少攻击面，包括外部接口</small></td>
+          <td class="cov-col"><span class="badge badge-full">✅ 较好</span></td>
+          <td>GEC（接口控制、禁不必要服务）+ ACM（权限最小化）</td>
+          <td>EN 18031 有对应要求；CRA 要求将攻击面最小化作为<strong>全生命周期设计原则</strong>，粒度更细</td>
+        </tr>
+        <tr>
+          <td class="num">12</td>
+          <td><strong>事件影响缓解</strong><br><small>使用漏洞利用缓解机制/技术</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>GEC（输入验证）+ RLM（恢复）</td>
+          <td><strong>CRA 独有要求</strong>：明确要求 exploit mitigation 技术（ASLR、Stack Canary、DEP 等内存安全机制）；EN 18031 无专属对应条款</td>
+        </tr>
+        <tr>
+          <td class="num">13</td>
+          <td><strong>安全相关信息记录与监控</strong><br><small>记录数据访问/功能修改等内部活动，提供退出机制</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>LGM（仅在 EN 18031-2/-3 中有专属要求）</td>
+          <td>EN 18031-1（通用设备）<strong>无专属日志机制</strong>；CRA 要求所有产品提供安全日志，并须提供 opt-out 机制——范围更广</td>
+        </tr>
+        <tr>
+          <td class="num">14</td>
+          <td><strong>安全数据清除</strong><br><small>用户可永久删除所有数据，数据转移须安全</small></td>
+          <td class="cov-col"><span class="badge badge-partial">⚠️ 部分</span></td>
+          <td>DLM（仅在 EN 18031-2 中）</td>
+          <td>DLM 是 EN 18031-2 差异化机制，<strong>仅适用于处理隐私数据的设备</strong>；CRA 要求所有类型产品均支持安全数据清除</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">* 官方文本 Annex I Part I 实际含14条（部分资料称"13项"系不计入第2条子项），本表完整呈现全部14条。</div>
+
+  <!-- 关键差距 -->
+  <div class="section-title">关键差距：CRA 超出 EN 18031 的部分</div>
+  <div class="gap-grid">
+    <div class="gap-card">
+      <div class="gap-num">差距 1</div>
+      <h4>风险评估框架</h4>
+      <p>CRA 强制要求以正式网络安全风险评估（Art. 13(2)）为合规基础，并在支持期内持续更新；EN 18031 无此强制框架。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 2</div>
+      <h4>漏洞生命周期管理</h4>
+      <p>CRA 要求完整漏洞处理流程（Annex I Part II）、协调披露机制、向 ENISA 的早期预警报告（24小时内）；EN 18031 无独立漏洞管理体系。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 3</div>
+      <h4>SBOM（软件物料清单）</h4>
+      <p>CRA 要求技术文档包含机器可读的 SBOM，列明所有软件组件；EN 18031 完全无此要求。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 4</div>
+      <h4>安全支持期承诺</h4>
+      <p>CRA 明确要求制造商承诺不少于5年的安全支持期，并在支持期内持续维护；EN 18031 无生命周期安全义务。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 5</div>
+      <h4>Exploit 缓解技术</h4>
+      <p>CRA 条款 12 要求使用漏洞利用缓解技术（如 ASLR、Stack Canary、DEP 等内存安全机制）；EN 18031 无对应条款。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 6</div>
+      <h4>日志适用范围</h4>
+      <p>CRA 要求所有产品提供安全相关日志；EN 18031 的 LGM 仅在 -2（隐私）/-3（金融）分册中存在，通用设备（-1）无专属日志要求。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 7</div>
+      <h4>数据最小化原则</h4>
+      <p>CRA 将数据最小化明确为产品设计的硬性要求；EN 18031-2 仅隐含该原则，未明文强制。</p>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">差距 8</div>
+      <h4>数据清除适用范围</h4>
+      <p>CRA 要求所有产品支持安全数据清除；EN 18031 的 DLM 仅在 -2 中（仅处理隐私数据的设备），覆盖范围窄得多。</p>
+    </div>
+  </div>
+
+  <!-- 综合结论 -->
+  <div class="summary-box">
+    <h3>综合结论</h3>
+    <p>
+      EN 18031 在<strong>访问控制（ACM/AUM）、数据保密/完整性（SCM/SSM/CCK/CRY）、安全更新（SUM）、可用性保护（RLM/NMM/TCM）、攻击面控制（GEC）</strong>等<strong>技术机制层</strong>与 CRA 附件一 Part I 重叠度高，对从事无线电设备合规的制造商具备较强的基础覆盖价值。
+    </p>
+    <p style="margin-top:10px;">
+      但 EN 18031 在<strong>风险评估框架、漏洞生命周期管理（含ENISA报告）、SBOM、安全支持期义务、Exploit缓解技术</strong>方面存在<strong>实质性差距</strong>——这些是 CRA 独有的、超出 RED/EN 18031 体系的合规要求，制造商在迈向 CRA 合规时需要额外建立相应体系。
+    </p>
+  </div>
+
+  <div class="ref">
+    参考来源：EU 2024/2847 Annex I（官方法规文本）；EN 18031-1/2/3:2024（协调标准）；ENISA CRA Requirements Standards Mapping (2024/11)；Commission Guidance on CRA application [2026] XXX draft；TÜV Rheinland EN 18031 技术解读；Inovasense RED Delegated Act &amp; EN 18031 Analysis (2026-03-05)
+  </div>
+
+</div>
+</body>
+</html>
